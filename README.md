@@ -16,6 +16,11 @@ Rekomendacje są oparte na `WatchScore`, który jest obliczany na podstawie:
   - `<= 21 dni`: `+15`
   - `<= 60 dni`: `+5`
   - `> 60 dni`: `-10`
+- Typ misji na podstawie `missionName` (case-insensitive):
+  - zawiera `Crew`: `+15`
+  - zawiera `Transporter`: `+10`
+  - zawiera `Starlink`: `+8`
+- Brak launchpada (`launchpad` jest `null`/pusty): `-5`
 - Brak daty startu (`launchDateUtc == null`): `-15` od wyniku bazowego
 - Wynik końcowy jest ograniczany do zakresu `0-100` (`Math.Clamp`)
 

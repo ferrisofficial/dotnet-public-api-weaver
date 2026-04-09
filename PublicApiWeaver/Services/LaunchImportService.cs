@@ -24,7 +24,7 @@ public sealed class LaunchImportService(ISpaceXClient spaceXClient, LaunchDbCont
                 Launchpad = x.Launchpad,
                 HasWebcast = !string.IsNullOrWhiteSpace(x.Links?.Webcast),
                 WebcastUrl = x.Links?.Webcast,
-                WatchScore = CalculateWatchScore(x.DateUtc, x.Links?.Webcast),
+                WatchScore = CalculateWatchScore(x.DateUtc, x.Links?.Webcast, x.Name, x.Launchpad),
                 ImportedAtUtc = now
             })
             .ToList();
@@ -126,9 +126,11 @@ public sealed class LaunchImportService(ISpaceXClient spaceXClient, LaunchDbCont
         return items;
     }
 
-    private static int CalculateWatchScore(DateTimeOffset? launchDateUtc, string? webcastUrl)
+    private static int CalculateWatchScore(DateTimeOffset? launchDateUtc, string? webcastUrl, string? missionName, string? launchpad)
     {
         var score = 50 + (!string.IsNullOrWhiteSpace(webcastUrl) ? 25 : 0);
+        score += CalculateMissionTypeBonus(missionName);
+        score += string.IsNullOrWhiteSpace(launchpad) ? -5 : 0;
 
         if (launchDateUtc is null)
         {
@@ -146,6 +148,31 @@ public sealed class LaunchImportService(ISpaceXClient spaceXClient, LaunchDbCont
         };
 
         return Math.Clamp(score, 0, 100);
+    }
+
+    private static int CalculateMissionTypeBonus(string? missionName)
+    {
+        if (string.IsNullOrWhiteSpace(missionName))
+        {
+            return 0;
+        }
+
+        if (missionName.Contains("crew", StringComparison.OrdinalIgnoreCase))
+        {
+            return 15;
+        }
+
+        if (missionName.Contains("transporter", StringComparison.OrdinalIgnoreCase))
+        {
+            return 10;
+        }
+
+        if (missionName.Contains("starlink", StringComparison.OrdinalIgnoreCase))
+        {
+            return 8;
+        }
+
+        return 0;
     }
 }
 

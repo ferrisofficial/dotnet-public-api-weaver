@@ -91,6 +91,46 @@ public sealed class LaunchImportServiceTests
     }
 
     [Fact]
+    public async Task ImportUpcomingAsync_AddsMissionTypeBonusForCrewMissions()
+    {
+        var launchDate = DateTimeOffset.UtcNow.AddDays(14);
+        var launches = new List<SpaceXLaunchDto>
+        {
+            BuildLaunch("crew", launchDate, true, missionName: "Crew-10"),
+            BuildLaunch("generic", launchDate, true, missionName: "Generic Mission")
+        };
+
+        var service = ServiceFactory.CreateService(launches, out var db);
+
+        await service.ImportUpcomingAsync(10, CancellationToken.None);
+
+        var crewScore = db.Launches.Single(x => x.ExternalId == "crew").WatchScore;
+        var genericScore = db.Launches.Single(x => x.ExternalId == "generic").WatchScore;
+
+        Assert.Equal(15, crewScore - genericScore);
+    }
+
+    [Fact]
+    public async Task ImportUpcomingAsync_PenalizesMissingLaunchpad()
+    {
+        var launchDate = DateTimeOffset.UtcNow.AddDays(14);
+        var launches = new List<SpaceXLaunchDto>
+        {
+            BuildLaunch("no-pad", launchDate, true, launchpad: null),
+            BuildLaunch("with-pad", launchDate, true, launchpad: "pad-a")
+        };
+
+        var service = ServiceFactory.CreateService(launches, out var db);
+
+        await service.ImportUpcomingAsync(10, CancellationToken.None);
+
+        var noPadScore = db.Launches.Single(x => x.ExternalId == "no-pad").WatchScore;
+        var withPadScore = db.Launches.Single(x => x.ExternalId == "with-pad").WatchScore;
+
+        Assert.Equal(5, withPadScore - noPadScore);
+    }
+
+    [Fact]
     public async Task GetDashboardAsync_ReturnsCorrectCountsAndTopLaunchpads()
     {
         var service = ServiceFactory.CreateService([], out var db);
@@ -176,14 +216,15 @@ public sealed class LaunchImportServiceTests
         DateTimeOffset? dateUtc,
         bool upcoming,
         string? webcast = null,
-        string? missionName = null)
+        string? missionName = null,
+        string? launchpad = "pad-a")
         => new()
         {
             Id = id,
             Name = missionName ?? $"mission-{id}",
             DateUtc = dateUtc,
             Upcoming = upcoming,
-            Launchpad = "pad-a",
+            Launchpad = launchpad,
             Links = new SpaceXLinksDto { Webcast = webcast }
         };
 
