@@ -1,0 +1,33 @@
+# Build outputs
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE folders
+.vs/
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Logs
+*.log
+
+# Local databases
+*.db
+*.db-shm
+*.db-wal
+
+# App secrets and local environment overrides
+appsettings.Development.json
+secrets.json
+
+# OS junk
+.DS_Store
+Thumbs.db

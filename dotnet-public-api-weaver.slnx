@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="PublicApiWeaver.Tests/PublicApiWeaver.Tests.csproj" />
+  <Project Path="PublicApiWeaver/PublicApiWeaver.csproj" />
+</Solution>
