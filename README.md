@@ -55,7 +55,7 @@ Po starcie aplikacja automatycznie utworzy plik bazy SQLite: launches.db.
   - Jak działa zapis: jeśli start o tym samym `ExternalId` już istnieje, rekord jest aktualizowany; w przeciwnym razie dodawany.
   - Przykładowa odpowiedź:
 
-![Przykładowa odpowiedź](ReadmeImages\POSTExample.png)
+![Przykładowa odpowiedź](ReadmeImages/POSTExample.png)
 
 - GET /api/weaver/dashboard
   - Co robi: zwraca zagregowany widok danych zapisanych lokalnie.
@@ -67,7 +67,7 @@ Po starcie aplikacja automatycznie utworzy plik bazy SQLite: launches.db.
     - `topLaunchpads`: 3 najczęściej występujące launchpady.
   - Przykładowa odpowiedź:
 
-![Przykładowa odpowiedź](ReadmeImages\GETExample.png)
+![Przykładowa odpowiedź](ReadmeImages/GETExample.png)
 
 - GET /api/weaver/recommendations?take=5
   - Co robi: zwraca listę rekomendowanych startów na podstawie `WatchScore` (0-100).
@@ -75,7 +75,7 @@ Po starcie aplikacja automatycznie utworzy plik bazy SQLite: launches.db.
   - Logika kolejności: preferowane są starty z datą, z priorytetem dla przyszłych, następnie malejąco po `WatchScore`.
   - Przykładowa odpowiedź:
 
-![Przykładowa odpowiedź](ReadmeImages\GETExample2.png)
+![Przykładowa odpowiedź](ReadmeImages/GETExample2.png)
 
 ## Przykładowe wywołania
 
